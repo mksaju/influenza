@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ইনফ্লুয়েঞ্জা ভ্যাকসিন শিডিউলার</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f0f8ff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: none;
+        }
+        .card-header {
+            background-color: #2e8b57;
+            color: white;
+            border-radius: 15px 15px 0 0 !important;
+            font-weight: bold;
+        }
+        .btn-success {
+            background-color: #2e8b57;
+            border: none;
+            padding: 10px 20px;
+        }
+        .btn-success:hover {
+            background-color: #3cb371;
+        }
+        .result-card {
+            background-color: #e8f5e9;
+            border-left: 5px solid #2e8b57;
+        }
+        .vaccine-dose {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: white;
+        }
+        .dose-number {
+            font-weight: bold;
+            color: #2e8b57;
+        }
+        .special-note {
+            background-color: #fff3cd;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        .form-label {
+            font-weight: 500;
+        }
+        .risk-factors {
+            background-color: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h3>ইনফ্লুয়েঞ্জা ভ্যাকসিন শিডিউলার</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="vaccineForm">
+                            <div class="mb-3">
+                                <label for="patientType" class="form-label">রোগীর ধরন নির্বাচন করুন:</label>
+                                <select class="form-select" id="patientType" required>
+                                    <option value="" selected disabled>নির্বাচন করুন...</option>
+                                    <option value="child">শিশু (৬ মাস - ৮ বছর)</option>
+                                    <option value="adult">প্রাপ্তবয়স্ক (৯ বছর ও তার বেশি)</option>
+                                    <option value="senior">বয়স্ক (৬৫+ বছর)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3" id="firstTimeContainer" style="display: none;">
+                                <label for="firstTime" class="form-label">এটি কি প্রথমবার ইনফ্লুয়েঞ্জা ভ্যাকসিন নিচ্ছেন?</label>
+                                <select class="form-select" id="firstTime">
+                                    <option value="no">না, আগেও নিয়েছি</option>
+                                    <option value="yes">হ্যাঁ, প্রথমবার</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="startDate" class="form-label">ভ্যাকসিন শুরু করার তারিখ নির্বাচন করুন:</label>
+                                <input type="date" class="form-control" id="startDate" required>
+                            </div>
+                            
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-success">শিডিউল দেখুন</button>
+                            </div>
+                        </form>
+                        
+                        <div id="resultContainer" class="mt-4" style="display: none;">
+                            <div class="card result-card">
+                                <div class="card-body">
+                                    <h5 class="card-title">ভ্যাকসিনেশন শিডিউল</h5>
+                                    <div id="scheduleResults"></div>
+                                    <div id="specialNotes" class="special-note mt-3" style="display: none;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mt-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">ইনফ্লুয়েঞ্জা ভ্যাকসিন সম্পর্কে তথ্য</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>শিশুদের জন্য (৬ মাস - ৮ বছর):</h6>
+                                <ul>
+                                    <li>প্রথমবার ভ্যাকসিন নিলে: ২ ডোজ, ৪ সপ্তাহ অন্তর</li>
+                                    <li>আগে ভ্যাকসিন নিলে: বছরে ১ ডোজ</li>
+                                    <li>সেরা সময়: অক্টোবর-নভেম্বর</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>প্রাপ্তবয়স্ক ও বয়স্কদের জন্য:</h6>
+                                <ul>
+                                    <li>বছরে ১ ডোজ</li>
+                                    <li>বয়স্কদের জন্য উচ্চ ডোজ ভ্যাকসিন উপলব্ধ</li>
+                                    <li>সেরা সময়: অক্টোবর-নভেম্বর</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="risk-factors mt-3">
+                            <h6>ইনফ্লুয়েঞ্জা ভ্যাকসিনের জন্য উচ্চ ঝুঁকি গ্রুপ:</h6>
+                            <ul>
+                                <li>৫ বছরের কম বয়সী শিশু (বিশেষ করে ২ বছরের কম)</li>
+                                <li>৬৫+ বছর বয়সী ব্যক্তি</li>
+                                <li>গর্ভবতী মহিলা</li>
+                                <li>হাঁপানি, ডায়াবেটিস, হৃদরোগ ইত্যাদি রোগী</li>
+                                <li>এইচআইভি/এইডস বা ক্যান্সার রোগী</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // আজকের তারিখ সেট করুন
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+            document.getElementById('startDate').value = formattedDate;
+            
+            // প্রথমবার ভ্যাকসিন নিচ্ছেন কিনা সেই ফিল্ড দেখান/লুকান
+            document.getElementById('patientType').addEventListener('change', function() {
+                const firstTimeContainer = document.getElementById('firstTimeContainer');
+                if (this.value === 'child') {
+                    firstTimeContainer.style.display = 'block';
+                } else {
+                    firstTimeContainer.style.display = 'none';
+                }
+            });
+            
+            // ফর্ম সাবমিট হ্যান্ডলার
+            document.getElementById('vaccineForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                calculateSchedule();
+            });
+        });
+        
+        function calculateSchedule() {
+            const patientType = document.getElementById('patientType').value;
+            const firstTime = document.getElementById('firstTime').value;
+            const startDateStr = document.getElementById('startDate').value;
+            
+            if (!patientType || !startDateStr) {
+                alert('দয়া করে সকল প্রয়োজনীয় তথ্য প্রদান করুন');
+                return;
+            }
+            
+            const startDate = new Date(startDateStr);
+            const resultsContainer = document.getElementById('scheduleResults');
+            const specialNotes = document.getElementById('specialNotes');
+            
+            resultsContainer.innerHTML = '';
+            specialNotes.style.display = 'none';
+            
+            if (patientType === 'child') {
+                // শিশুদের শিডিউল
+                if (firstTime === 'yes') {
+                    // প্রথমবার ভ্যাকসিন নিলে
+                    const dose1 = new Date(startDate);
+                    const dose2 = new Date(startDate);
+                    dose2.setDate(dose2.getDate() + 28); // 4 সপ্তাহ পর
+                    
+                    createDoseElement(resultsContainer, 1, dose1, 'প্রথম ডোজ');
+                    createDoseElement(resultsContainer, 2, dose2, 'দ্বিতীয় ডোজ (প্রথম ডোজের ৪ সপ্তাহ পর)');
+                    
+                    specialNotes.innerHTML = `
+                        <strong>বিশেষ নির্দেশনা:</strong><br>
+                        - শিশুটি যদি প্রথমবার ইনফ্লুয়েঞ্জা ভ্যাকসিন নিচ্ছে তবে ২ ডোজ প্রয়োজন<br>
+                        - পরবর্তী বছর থেকে বছরে ১ ডোজ দিলেই হবে<br>
+                        - সেরা সময়: অক্টোবর-নভেম্বর মাসে ভ্যাকসিন দেওয়া
+                    `;
+                } else {
+                    // আগে ভ্যাকসিন নিয়েছে
+                    createDoseElement(resultsContainer, 1, new Date(startDate), 'বার্ষিক ডোজ');
+                    
+                    specialNotes.innerHTML = `
+                        <strong>বিশেষ নির্দেশনা:</strong><br>
+                        - যেহেতু শিশুটি আগে ইনফ্লুয়েঞ্জা ভ্যাকসিন নিয়েছে, তাই এবার ১ ডোজই যথেষ্ট<br>
+                        - পরবর্তী বছর আবার ১ ডোজ নিতে হবে<br>
+                        - সেরা সময়: অক্টোবর-নভেম্বর মাসে ভ্যাকসিন দেওয়া
+                    `;
+                }
+                specialNotes.style.display = 'block';
+            } else {
+                // প্রাপ্তবয়স্ক ও বয়স্কদের শিডিউল
+                createDoseElement(resultsContainer, 1, new Date(startDate), 'বার্ষিক ডোজ');
+                
+                if (patientType === 'senior') {
+                    specialNotes.innerHTML = `
+                        <strong>বিশেষ নির্দেশনা (বয়স্কদের জন্য):</strong><br>
+                        - ৬৫+ বছর বয়সীদের জন্য উচ্চ ডোজ ইনফ্লুয়েঞ্জা ভ্যাকসিন উপলব্ধ<br>
+                        - বছরে ১ বার ভ্যাকসিন নিতে হবে<br>
+                        - সেরা সময়: অক্টোবর-নভেম্বর মাসে ভ্যাকসিন দেওয়া<br>
+                        - ফ্লু মৌসুম শুরু হওয়ার আগেই ভ্যাকসিন নেওয়া ভালো
+                    `;
+                } else {
+                    specialNotes.innerHTML = `
+                        <strong>বিশেষ নির্দেশনা:</strong><br>
+                        - বছরে ১ বার ভ্যাকসিন নিতে হবে<br>
+                        - সেরা সময়: অক্টোবর-নভেম্বর মাসে ভ্যাকসিন দেওয়া<br>
+                        - ফ্লু মৌসুম শুরু হওয়ার আগেই ভ্যাকসিন নেওয়া ভালো
+                    `;
+                }
+                specialNotes.style.display = 'block';
+            }
+            
+            document.getElementById('resultContainer').style.display = 'block';
+        }
+        
+        function createDoseElement(container, doseNumber, date, description) {
+            const doseElement = document.createElement('div');
+            doseElement.className = 'vaccine-dose';
+            doseElement.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="dose-number">ডোজ ${doseNumber}:</span>
+                        <span class="ms-2">${formatDate(date)}</span>
+                    </div>
+                    <div class="badge bg-success text-white">${description}</div>
+                </div>
+            `;
+            container.appendChild(doseElement);
+        }
+        
+        function formatDate(date) {
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            return date.toLocaleDateString('bn-BD', options);
+        }
+    </script>
+</body>
+</html>
